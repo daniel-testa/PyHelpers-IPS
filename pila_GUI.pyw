@@ -1,10 +1,8 @@
-#   ____  _____ __ __ __ _____ __    ______ _____ _____ ______ _____ 
-#  |    \|  _  |   \ |__|   __|  |  |      |   __|   __|      |  _  |
-#  | |   |     |     |  |   __|  --;'_    _'   __|__   '_    _'     |
-#  |____/|__|__|__\__|__|_____|____|  |__| |_____|_____| |__| |__|__|
-#                  \-----
-#		    \6 de octubre de 2022
-'''                                      ---- ver 1.33
+'''
+ daniel testa . daniel.testa.t@gmail.com
+ ---- versión 1.33
+ 6 de octubre de 2022
+
  Script para generar archivos xlsx nuevos a partir de dos
  números de remito que definen una pila
 
@@ -12,10 +10,6 @@
  - Administrar mejor los errores try/exept
  - Crear lógica flexible para cuando son más de 2 remitos
 '''
-
-__version__ = '1.33'
-__author__ = 'daniel testa'
-
 import openpyxl
 from openpyxl.styles import PatternFill, Font, Border, Side
 from openpyxl.worksheet.page import PageMargins, PrintPageSetup
@@ -44,7 +38,7 @@ def generar_pila(arch_ent, fecha_reunion, pila_destino, remito_1, remito_2):
     hoja_sal = libro_sal['Sheet']
     hoja_sal.title ='sobres y acuses a imprimir'
     celda_sal = hoja_sal.cell
-    #------------------ Opciones de impresión                                        (paperSize= 9 == A4. Modulo worksheet.py línea 88)
+    #------------------ Opciones de impresión ----------------(paperSize= 9 == A4. Modulo worksheet.py línea 88)
     hoja_sal.page_setup = PrintPageSetup(orientation = 'landscape', paperSize= 9, scale= 84)
     hoja_sal.page_margins = PageMargins(left=0, right=0, top=0, bottom=0, header=0, footer=0)
     #------------------  Definición de estilos
@@ -84,28 +78,28 @@ def generar_pila(arch_ent, fecha_reunion, pila_destino, remito_1, remito_2):
     #------------------ Encontrar número de fila en que aparece por primera vez el remito_1
     for _ in range(2,hoja_ent.max_row+1):
         if celda_ent(row=_, column=11).value == r1:
-            primera_fila_ent_1 = index(_)               # Fila en que aparece por primera vez el remito
-            primera_fila_1 = primera_fila_ent_1 - 2     # Cero para el primer remito e inicio - (inicio -2) para todos los demás
+            primera_fila_ent_1 = index(_)
+            primera_fila_1 = primera_fila_ent_1 - 2
             break
 
     #------------------ Encontrar número de fila en que aparece por ultima vez el remito_1
     lista_a_medir = []
     for _ in range(2,hoja_ent.max_row+1):
         if celda_ent(row=_, column=11).value == r1:
-            lista_a_medir.append(index(_))              # _=fila, index(_)=nº de fila, generamos una lista[] con los nº de fila 
-    lista_a_medir.reverse()                             # Metodo reverse() a la lista[]
-    ultima_fila_1 = lista_a_medir[0]                    # Elegir primer elemento de la lista[] en reversa, o sea el último nº de fila, cualquiera sea
+            lista_a_medir.append(index(_))
+    lista_a_medir.reverse()
+    ultima_fila_1 = lista_a_medir[0]
 
     #------------------ Encontrar número de fila en que aparece por primera vez el remito_2
     for _ in range(2,hoja_ent.max_row+1):
         if celda_ent(row=_, column=11).value == r2:
-            primera_fila_ent_2 = index(_)               # Fila en que aparece por primera vez el remito
+            primera_fila_ent_2 = index(_)
             primera_fila_2 = primera_fila_ent_2 - 1
             break
 
     #------------------ Copiar en la pila el primer remito
     for i in range(2, hoja_ent.max_row+1):
-        if celda_ent(row=i, column=11).value == r1: # or celda_ent(row=i, column=10).value == remito_2:
+        if celda_ent(row=i, column=11).value == r1:
             for j in range(2, 12):
                 celda_sal(row=i-primera_fila_1, column=j).value = celda_ent(row=i, column=j).value
 
@@ -166,9 +160,9 @@ def main():
         pila_destino = values['pila_']
         remito_1 = values['remito_1']
         remito_2 = values['remito_2']
-        ruta_de_archivo = os.path.realpath(arch_ent)          # Conseguir ruta al archivo excel
-        carpeta_de_trabajo = os.path.dirname(ruta_de_archivo) # Conseguir ruta a carpeta
-        os.chdir(carpeta_de_trabajo)                          # Asignar ruta como dir de trabajo para que funcione el script al ejecutar con doble click
+        ruta_de_archivo = os.path.realpath(arch_ent)
+        carpeta_de_trabajo = os.path.dirname(ruta_de_archivo)
+        os.chdir(carpeta_de_trabajo)
 
         if event == sg.WIN_CLOSED or event == 'Salir':
             break
@@ -177,7 +171,7 @@ def main():
             window['remito_1']('')
             window['remito_2']('')
         elif event == 'Aceptar':
-            num_r = const_lista_remitos(arch_ent)    # Asignar lista de remitos para validación
+            num_r = const_lista_remitos(arch_ent)
             rem1_str = remito_1
             rem2_str = remito_2
             ''' print(num_r) # Utilizado para chequear el contenido de la lista devuelta por “cons_lista_remitos()”'''
