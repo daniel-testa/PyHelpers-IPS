@@ -1,10 +1,8 @@
-#   ____  _____ __ __ __ _____ __    ______ _____ _____ ______ _____ 
-#  |    \|  _  |   \ |__|   __|  |  |      |   __|   __|      |  _  |
-#  | |   |     |     |  |   __|  --;'_    _'   __|__   '_    _'     |
-#  |____/|__|__|__\__|__|_____|____|  |__| |_____|_____| |__| |__|__|
-#                  \-----
-#		    \6 de octubre de 2022
-'''                                    ---- ver 1.33
+'''
+daniel testa. daniel.testa.t@gmail.com
+6 de octubre de 2022
+---- versión 1.33
+
 Script para automatizar los arreglos, modificaciones, etc en el archivo
 xlsx generado al importar los datos proveeidos por computación en el archivo
 '_FREE4_WKF_EXPEDIENTES_REUNION_NOTIFICACIONES_X_MAIL.AAAA-MM-DD.TXT'
@@ -134,7 +132,7 @@ def main():
             window['xlsx_entrada']('')
             window['fecha_r']('')
         elif event == 'Aceptar':
-            # Valiables
+
             nombre_archivo_ent = values['xlsx_entrada']
             fecha_reunion = values['fecha_r']
             nombre_archivo_sal = nombre_archivo_ent
@@ -142,7 +140,7 @@ def main():
             planilla_de_trabajo = datos['Hoja1']
             celda_ = planilla_de_trabajo.cell
             listado_de_remitos = datos['Remitos y Fechas']
-            # Funciones formateadoras
+
             ciudad(celda_)
             provincia(celda_)
             expediente(celda_)
