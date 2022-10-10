@@ -13,6 +13,45 @@ import PySimpleGUI as sg
 import openpyxl
 from openpyxl.styles import numbers, PatternFill
 
+
+def main():
+    sg.theme('SystemDefaultForReal')
+    diseño = [[sg.Text('Elegir archivo Excel a modificar')],
+              [sg.Text('Elegir archivo:'), sg.Input(key='xlsx_entrada' ,change_submits=True),
+                sg.FileBrowse(key='xlsx_entrada', button_text= 'Buscar',
+                             file_types=(('Archivos Excel', '*.xlsx'),))],
+              [sg.Text('Ingresar fecha de reunión (dd-mm-aa)')],
+              [sg.Text('Fecha:           '), sg.Input(key='fecha_r', change_submits=True)],
+              [sg.Button('Aceptar', expand_x=True), sg.Button('Salir', expand_x=True),
+               sg.Button('Limpiar', expand_x=True)]]
+    window = sg.Window('Buscar archivo e ingresar fecha', diseño)
+
+    while True:
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == 'Salir':
+            break
+        elif event == 'Limpiar':
+            window['xlsx_entrada']('')
+            window['fecha_r']('')
+        elif event == 'Aceptar':
+            nombre_archivo_ent = values['xlsx_entrada']
+            fecha_reunion = values['fecha_r']
+            nombre_archivo_sal = nombre_archivo_ent
+            datos = openpyxl.load_workbook(nombre_archivo_ent)
+            planilla_de_trabajo = datos['Hoja1']
+            celda_ = planilla_de_trabajo.cell
+            listado_de_remitos = datos['Remitos y Fechas']
+            ciudad(celda_)
+            provincia(celda_)
+            expediente(celda_)
+            fecha(celda_, fecha_reunion)
+            extranjera(celda_, planilla_de_trabajo)
+            lista_imprimir(celda_, listado_de_remitos, planilla_de_trabajo, fecha_reunion)
+            datos.save(nombre_archivo_sal)
+            sg.PopupOK('Exito')
+    window.close()
+
+
 def ciudad (celda_):
     conteo_fila = 1
     while True:
@@ -43,9 +82,10 @@ def ciudad (celda_):
                     .replace('SAN NICOLAS DE LOS ARROYOS', 'SAN NICOLAS')
                     .replace('SIERRA DE LA VENTANA', 'S DE LA VENTANA')
                     .replace('VILLA SANTOS TESEI', 'VILLA TESEI')
-                    )
+                )
         else:
             break
+
 
 def provincia (celda_):
     conteo_fila = 1
@@ -60,6 +100,7 @@ def provincia (celda_):
         else:
            break
 
+
 def expediente (celda_):
     conteo_fila = 1
     while True:
@@ -71,9 +112,10 @@ def expediente (celda_):
                     .replace('-0-', '-')
                     .replace('-00', '-')
                     .replace('-0', '-')
-                    )
+                )
         else:
            break
+
 
 def fecha (celda_, fecha_reunion):
     conteo_fila = 1
@@ -86,6 +128,7 @@ def fecha (celda_, fecha_reunion):
         else:
            break
 
+
 def extranjera (celda_, planilla_de_trabajo):
     conteo_fila = 1
     while True:
@@ -96,60 +139,23 @@ def extranjera (celda_, planilla_de_trabajo):
                 )
         col_extranjero = celda_(row=conteo_fila, column=8).value
         if col_extranjero != None:
-            if (celda_(row=conteo_fila, column=8).value.__contains__('OTRA / NC') or
-                celda_(row=conteo_fila, column=8).value.isspace()):
+            if (celda_(row=conteo_fila, column=8).value.__contains__('OTRA / NC')
+                or celda_(row=conteo_fila, column=8).value.isspace()):
                 for i in range(1, planilla_de_trabajo.max_column):
                     celda_(row=conteo_fila, column=i).fill = fondoRojo
         else:
            break
 
-def lista_imprimir (celda_, listado_de_remitos, planilla_de_trabajo, f):
 
+def lista_imprimir (celda_, listado_de_remitos, planilla_de_trabajo, f):
     listado_de_remitos['A1'] = f'Reunión {f} - {str(planilla_de_trabajo.max_row - 2)} expedientes.'
     n_remitos = []
     for _ in range(2, planilla_de_trabajo.max_row):
         n_remitos.append( celda_(row=_,column=11).value)
         unicos = sorted(list(set(n_remitos)))
-
     for remito in unicos:
        listado_de_remitos.append([remito])
 
-
-def main():
-    sg.theme('SystemDefaultForReal')
-    diseño = [[sg.Text('Elegir archivo Excel a modificar')],
-              [sg.Text('Elegir archivo:'), sg.Input(key='xlsx_entrada' ,change_submits=True), sg.FileBrowse(key='xlsx_entrada', button_text= 'Buscar', file_types=(('Archivos Excel', '*.xlsx'),))],
-              [sg.Text('Ingresar fecha de reunión (dd-mm-aa)')],
-              [sg.Text('Fecha:           '), sg.Input(key='fecha_r', change_submits=True)],
-              [sg.Button('Aceptar', expand_x=True), sg.Button('Salir', expand_x=True), sg.Button('Limpiar', expand_x=True)]]
-    window = sg.Window('Buscar archivo e ingresar fecha', diseño)
-
-    while True:
-        event, values = window.read()
-        if event == sg.WIN_CLOSED or event == 'Salir':
-            break
-        elif event == 'Limpiar':
-            window['xlsx_entrada']('')
-            window['fecha_r']('')
-        elif event == 'Aceptar':
-
-            nombre_archivo_ent = values['xlsx_entrada']
-            fecha_reunion = values['fecha_r']
-            nombre_archivo_sal = nombre_archivo_ent
-            datos = openpyxl.load_workbook(nombre_archivo_ent)
-            planilla_de_trabajo = datos['Hoja1']
-            celda_ = planilla_de_trabajo.cell
-            listado_de_remitos = datos['Remitos y Fechas']
-
-            ciudad(celda_)
-            provincia(celda_)
-            expediente(celda_)
-            fecha(celda_, fecha_reunion)
-            extranjera(celda_, planilla_de_trabajo)
-            lista_imprimir(celda_, listado_de_remitos, planilla_de_trabajo, fecha_reunion)
-            datos.save(nombre_archivo_sal)
-            sg.PopupOK('Exito')
-    window.close()
 
 if __name__ == '__main__':
     main()
