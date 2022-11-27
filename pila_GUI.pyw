@@ -54,6 +54,7 @@ def main():
             window['pila_']('')
             window['remito_1']('')
             window['remito_2']('')
+            window.Element('pila_').SetFocus(force = True)
         elif event == 'Aceptar':
             num_r = const_lista_remitos(arch_ent)
             rem1_str = remito_1
@@ -77,6 +78,7 @@ def main():
                         window['pila_']('')
                         window['remito_1']('')
                         window['remito_2']('')
+                        window.Element('pila_').SetFocus(force = True)
                         if os.path.isfile(f'{dir_reunión}\\{pila_destino} __{fecha_reunion}.xlsx'):
                             sg.popup_auto_close(f'El archivo \'{pila_destino} __{fecha_reunion}.xlsx\' fue creado.')
                     else:
@@ -86,6 +88,7 @@ def main():
                     sg.popup(f'El número de remito ingresado, no es un número.')
                     window['remito_1']('')
                     window['remito_2']('')
+                    window.Element('remito_1').SetFocus(force = True)
             else:
                 sg.popup('Completar todos los campos.')
                 window['remito_1']('')
